@@ -32,7 +32,6 @@ def merge_pdfs_with_normalization():
         # 1. Add and Resize Document Pages
         doc_reader = PdfReader(doc_path)
         for page in doc_reader.pages:
-            # Scale each page to A4 size
             page.scale_to(width=A4_WIDTH, height=A4_HEIGHT)
             writer.add_page(page)
 
