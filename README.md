@@ -1,41 +1,57 @@
-# 📄 PDF Merger with A4 Normalization
+# 📄 Architecture Project PDF Merger
 
-Script em Python para **mesclar múltiplos PDFs** em um único arquivo, garantindo que **todas as páginas sejam padronizadas no formato A4**. Também adiciona automaticamente uma **página de capa** após cada documento.
+Python script to merge multiple technical PDFs into a single document, with optional section covers.
 
----
+Each document is processed with:
 
-## 🚀 Funcionalidades
-
-* 🔗 Mescla vários PDFs em sequência
-* 📐 Normaliza todas as páginas para tamanho A4
-* 📑 Insere uma capa padrão após cada documento
-* ⚠️ Trata erros básicos (pastas inexistentes, ausência de arquivos)
+* Optional **specific cover per document**
+* Optional **default fallback cover**
+* Pages resized to **A4 while preserving aspect ratio**
+* Content automatically centered on the page
 
 ---
 
-## 📁 Estrutura de Pastas
+## 📁 Folder Structure
 
-```
+Organize your project as follows:
+
+```bash
 project/
 │
 ├── concatenate_pdf.py
 ├── documents/
-│   ├── file1.pdf
-│   ├── file2.pdf
+│   ├── electrical.pdf
+│   ├── hydraulic.pdf
 │   └── ...
 │
 ├── covers/
-│   └── standard_cover.pdf
-│
-└── merged_document.pdf (gerado automaticamente)
+│   ├── electrical.pdf
+│   ├── hydraulic.pdf
+│   └── default.pdf
 ```
+
+### Rules
+
+* All input PDFs must be placed inside `documents/`
+* Covers are optional and must be placed inside `covers/`
+
+Cover selection follows this order:
+
+1. A cover with the **same name as the document**
+
+   * `documents/electrical.pdf` → `covers/electrical.pdf`
+2. If not found, uses:
+
+   * `covers/default.pdf`
+3. If neither exists:
+
+   * No cover is added
 
 ---
 
-## ⚙️ Pré-requisitos
+## 📦 Requirements
 
-* Python 3.8+
-* Biblioteca:
+Install the required dependency:
 
 ```bash
 pip install pypdf
@@ -43,77 +59,77 @@ pip install pypdf
 
 ---
 
-## ▶️ Como usar
+## ▶️ Usage
 
-1. **Adicione os PDFs**
+1. Add your PDF files to:
 
-   * Coloque os arquivos que deseja mesclar dentro da pasta:
-
-     ```
-     ./documents
-     ```
-
-2. **Adicione a capa (opcional, mas recomendado)**
-
-   * Coloque o arquivo:
-
-     ```
-     ./covers/standard_cover.pdf
-     ```
-
-3. **Execute o script**
-
-```
-    python concatenate_pdf.py
-    
+```bash
+./documents
 ```
 
-4. **Resultado**
+2. (Optional) Add cover files to:
 
-   * O arquivo final será gerado como:
+```bash
+./covers
+```
 
-     ```
-     merged_document.pdf
-     ```
+3. Run the script:
 
----
-
-## 🔄 Lógica de Processamento
-
-Para cada arquivo em `documents/`, o script:
-
-1. Lê o PDF
-2. Redimensiona todas as páginas para A4
-3. Adiciona as páginas ao arquivo final
-4. Procura por `standard_cover.pdf`
-5. Se existir:
-
-   * Redimensiona e adiciona a capa após o documento
-6. Repete o processo para o próximo arquivo
+```bash
+python concatenate_pdf.py
+```
 
 ---
 
-## ⚠️ Tratamento de Erros
+## 📄 Output
 
-* Pasta `documents` inexistente → erro e interrupção
-* Nenhum PDF encontrado → aviso e interrupção
-* Capa não encontrada → aviso, mas continua execução
-* Erro ao salvar → mensagem de erro exibida
+The generated file will be:
+
+```bash
+project_complete.pdf
+```
 
 ---
 
-## 🧠 Observações Técnicas
+## 🔄 Output Structure
 
-* A ordenação dos arquivos é feita alfabeticamente (`sorted`)
-* A normalização usa:
+Example input:
 
-  ```python
-  page.scale_to(width=A4_WIDTH, height=A4_HEIGHT)
-  ```
-* Dimensões A4 são obtidas via:
+```bash
+documents/
+  electrical.pdf
+  hydraulic.pdf
 
-  ```python
-  PaperSize.A4
-  ```
+covers/
+  electrical.pdf
+  default.pdf
+```
 
+Result:
 
+```
+[COVER: electrical.pdf]
+[electrical.pdf pages]
+
+[COVER: default.pdf]
+[hydraulic.pdf pages]
+```
+
+---
+
+## 📌 Notes for Usage
+
+* File order is alphabetical by default
+* To control order, prefix file names:
+
+```bash
+01_electrical.pdf
+02_hydraulic.pdf
+03_structural.pdf
+```
+
+* Covers must match file names exactly (including extension)
+
+---
+
+If needed, this setup can be extended to support CLI arguments or external configuration files.
